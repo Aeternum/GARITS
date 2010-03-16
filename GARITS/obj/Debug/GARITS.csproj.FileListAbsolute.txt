@@ -1,0 +1,12 @@
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\bin\Debug\GARITS.exe
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\bin\Debug\GARITS.pdb
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.Properties.Resources.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.csproj.GenerateResource.Cache
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.exe
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.pdb
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.Splash.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.GARITS.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.LoginForm.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.Administration.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.JobEdit.resources

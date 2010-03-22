@@ -10,3 +10,5 @@ C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\G
 C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.LoginForm.resources
 C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.Administration.resources
 C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.JobEdit.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.AddUser.resources
+C:\Users\fgrunta\Documents\Visual Studio 2008\Projects\GARITS\GARITS\obj\Debug\GARITS.ChangePassword.resources

@@ -27,7 +27,11 @@ namespace GARITS
                 }
             }
            if (!found)
-               components.Add(new Permission(-1, permission, false)); //Add the new permission in the array list so that we can set it up
+           {
+               Permission temp = new Permission(-1, permission, false);
+               temp.setComponent(item);
+               components.Add(temp); //Add the new permission in the array list so that we can set it up
+           }
         }
 
         public void updateComponents(int roleID)
@@ -38,6 +42,7 @@ namespace GARITS
                 {
                     try
                     {
+                        Console.WriteLine(p.getComponent().GetType());
                         if (p.getComponent().GetType() == typeof(System.Windows.Forms.ToolStripMenuItem))
                             ((ToolStripMenuItem)p.getComponent()).Enabled = true;
                     }
@@ -67,7 +72,7 @@ namespace GARITS
 
         public void readPermissions(Database db)
         {
-            components = db.getPermissions();
+            //components = db.getPermissions();
             foreach (Permission p in components)
             {
                 Console.WriteLine(p.getRoleID() + " " + p.getPermission() + " " + p.getAccess());

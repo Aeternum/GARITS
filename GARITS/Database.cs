@@ -22,9 +22,12 @@ namespace GARITS
         /// <param name="db">The database catalog to use</param>
         /// <param name="user">The user name</param>
         /// <param name="pass">The user password</param>   CharSet=utf8;
-        public Database(string svr, string db, string user, string pass)
+        public Database(string server, string database, string username, string password)
         {
-            this.connStr = "Server=" + svr + ";Database=" + db + ";Uid=" + user + ";Pwd=" + pass + ";";
+            if (password != "")
+                this.connStr = "Server=" + server + ";Database=" + database + ";Uid=" + username + ";Pwd=" + password + ";";
+            else
+                this.connStr = "Server=" + server + ";Database=" + database + ";Uid=" + username + ";";
 
             try
             {
@@ -40,56 +43,9 @@ namespace GARITS
             this.isConnected = false;
         }
 
-        /// <summary>
-        /// Creates a new database wrapper object that wraps around
-        /// the users table.
-        /// </summary>
-        /// <param name="svr">The name of the server</param>
-        /// <param name="db">The database catalog to use</param>
-        /// <param name="user">The user name</param>
-        /// <param name="pass">The user password</param>   CharSet=utf8;
-        public Database(string svr, string db, string user)
+        ~Database()
         {
-            this.connStr = "Server=" + svr + ";Database=" + db + ";Uid=" + user + ";";
-
-            try
-            {
-                sqlConn = new MySqlConnection(this.connStr);
-            }
-            catch (Exception excp)
-            {
-                Exception myExcp = new Exception("Error connecting you to " +
-                    "the my sql server. Internal error message: " + excp.Message, excp);
-                throw myExcp;
-            }
-
-            this.isConnected = false;
-        }
-
-
-        /// <summary>
-        /// Creates a new database wrapper object that wraps around
-        /// the users table.
-        /// </summary>
-        /// <param name="connStr">A connection string to provide to connect
-        /// to the database</param>
-        public Database(string connStr)
-        {
-            this.connStr = connStr;
-
-            try
-            {
-                sqlConn = new MySqlConnection(this.connStr);
-            }
-            catch (Exception excp)
-            {
-                Exception myExcp = new Exception("Error connecting you to " +
-                    "the my sql server. Error: " + excp.Message, excp);
-
-                throw myExcp;
-            }
-
-            this.isConnected = false;
+            this.Disconnect();
         }
 
         /// <summary>
@@ -145,30 +101,57 @@ namespace GARITS
             }
         }
 
-        /// <summary>
-        /// Adds a user into the database
-        /// </summary>
-        /// <param name="username">The user login</param>
-        /// <param name="password">The user password</param>
-        public void AddUser(string username, string password)
+
+        public bool login(string username, string password)
         {
-            string Query = "INSERT INTO users(usr_name, usr_pass) values" +
-                "('" + username + "','" + password + "')";
+            DatabaseResult dbresult = runQuery("select password from users where username = '" + username + "' and active = 1");
+            if (dbresult.getLength == 0)
+                return false;
+            string dbpassword = dbresult.getColumnValue(0);
+            Console.WriteLine(dbpassword);
+            Console.WriteLine(EncodePassword(password));
+            if (dbpassword == EncodePassword(password))
+                return true;
+            return false;
+        }
 
-            MySqlCommand addUser = new MySqlCommand(Query, this.sqlConn);
-
+        public DatabaseResult runQuery(string query)
+        {
+            if (!isConnected)
+                throw new Exception("Database is disconnected - unable to run query");
+            MySqlCommand command = new MySqlCommand(query, this.sqlConn);
+            DatabaseResult dbresult = new DatabaseResult();
             try
             {
-                addUser.ExecuteNonQuery();
+                //command.ExecuteNonQuery();
+                MySqlDataReader reader = command.ExecuteReader();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    dbresult.addColumn(reader.GetName(i));
+                }
+                while (reader.Read() != false)
+                {
+                    string[] values = new string[reader.FieldCount];
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        if (reader.IsDBNull(i))
+                            values[i] = null;
+                        else
+                            values[i] = reader.GetString(i);
+                    }
+                    dbresult.insertRow(values);
+                }
+                reader.Close();
             }
             catch (Exception excp)
             {
-                Exception myExcp = new Exception("Could not add user. Error: " +
+                Exception myExcp = new Exception("Could not verify user. Error: " +
                     excp.Message, excp);
                 throw (myExcp);
             }
+            return dbresult;
         }
-
+        /*
         /// <summary>
         /// Verifies whether a user with the supplied user
         /// credentials exists in the database or not. User
@@ -261,7 +244,7 @@ namespace GARITS
             {
                 return true;
             }
-        }
+        }*/
 
         public string EncodePassword(string originalPassword)
         {
@@ -274,11 +257,14 @@ namespace GARITS
             md5 = new MD5CryptoServiceProvider();
             originalBytes = ASCIIEncoding.Default.GetBytes(originalPassword);
             encodedBytes = md5.ComputeHash(originalBytes);
-
+            
+            //Console.WriteLine(encodedBytes);
             //Convert encoded bytes back to a 'readable' string
-            return BitConverter.ToString(encodedBytes);
+
+            return BitConverter.ToString(encodedBytes).Replace("-","").ToLower();
         }
 
+        /*
         public int[] getCurrentRoleID(string username)
         {
             return IntQuery("SELECT roleID from users where username = '" + username + "'");
@@ -379,6 +365,7 @@ namespace GARITS
             }
             return permissions;
         }
+         */
     }
 
 }

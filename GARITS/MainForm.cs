@@ -12,7 +12,7 @@ namespace GARITS
 {
     public partial class GARITS : Form
     {
-        private Utils utils;
+        private SettingsFile settingsFile;
         private bool loggedIn;
         private Permissions permissions;
         private string currentUser;
@@ -26,8 +26,8 @@ namespace GARITS
             permissions = new Permissions();
             try
             {
-                utils = new Utils();
-                db = new Database(utils.getDBConnectionString());
+                settingsFile = new SettingsFile();
+                db = new Database(settingsFile.getSetting("dbserver"), settingsFile.getSetting("dbname"), settingsFile.getSetting("dbuser"), settingsFile.getSetting("dbpassword"));
                 db.Connect();
                 permissions.readPermissions(db);
             }
@@ -70,9 +70,7 @@ namespace GARITS
             loginForm.ShowDialog();
             try
             {
-                Console.WriteLine(utils.getDBConnectionString());
-                
-                loggedIn = db.VerifyUser(loginForm.getUsername(), loginForm.getPassword());
+                loggedIn = db.login(loginForm.getUsername(), loginForm.getPassword());
             }
             catch (Exception ex)
             {
@@ -84,7 +82,8 @@ namespace GARITS
             else
             {
                 currentUser = loginForm.getUsername();
-                int[] roleid = db.getCurrentRoleID(currentUser);
+                currentRole = db.runQuery("select roles.roleName from users, roles where users.username = '" + currentUser + "' and users.roleID = roles.roleID").getColumnValue(0);
+                /*int[] roleid = db.getCurrentRoleID(currentUser);
                 string[] role = db.getCurrentRole(currentUser);
                 if ((roleid[0] != 1) || (role[0] != "Found")) // If not found
                 {
@@ -92,7 +91,7 @@ namespace GARITS
                     Environment.Exit(1);
                 }
                 currentRoleID = roleid[1];
-                currentRole = role[1];
+                currentRole = role[1];*/
                 toolStripStatusLabel1.Text = "Logged in as " + currentUser;
                 toolStripStatusLabel2.Text = currentRole;
                 //Here we will have to start enabling controls around the forum depending on what user has access to
@@ -106,10 +105,8 @@ namespace GARITS
 
         private void administrationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Administration adminForm = new Administration();
+            Administration adminForm = new Administration(db);
             adminForm.ShowDialog();
-            JobEdit jedit = new JobEdit();
-            jedit.ShowDialog();
         }
         
         private void button1_Click(object sender, EventArgs e)
